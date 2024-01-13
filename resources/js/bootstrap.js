@@ -5,9 +5,24 @@
  */
 
 import axios from 'axios';
-window.axios = axios;
+import { useAuthStore } from '@stores/auth';
 
-window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+const httpClient = axios.create({
+    headers: { 'Content-Type': 'application/json' }
+});
+
+httpClient.interceptors.request.use(function (config) {
+    const auth = useAuthStore();
+    const token = auth.getToken;
+
+    config.headers.Authorization = token ? `Bearer ${token}` : '';
+
+    return config;
+})
+
+window.axios = httpClient;
+
+// window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
 /**
  * Echo exposes an expressive API for subscribing to channels and listening
@@ -30,3 +45,9 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 //     forceTLS: (import.meta.env.VITE_PUSHER_SCHEME ?? 'https') === 'https',
 //     enabledTransports: ['ws', 'wss'],
 // });
+
+import { createPinia } from 'pinia';
+
+const pinia = createPinia();
+
+window.pinia = pinia;

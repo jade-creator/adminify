@@ -45,6 +45,7 @@ class LoginController extends Controller
         }
 
         return response([
+            'admin' => $admin,
             'token' => $admin->createToken('admin')->plainTextToken
         ]);
     }

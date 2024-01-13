@@ -7,6 +7,7 @@ import { RouterLink } from 'vue-router';
 const app = createApp(App);
 
 app.use(router);
+app.use(pinia);
 app.component(RouterLink);
 
 app.mount("#app");
