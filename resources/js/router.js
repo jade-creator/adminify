@@ -30,6 +30,11 @@ const router = createRouter({
                     path: 'products/create',
                     name: 'admin.products.create',
                     component: () => import('@views/admin/products/ProductCreate.vue'),
+                },
+                {
+                    path: 'products/:id/edit',
+                    name: 'admin.products.edit',
+                    component: () => import('@views/admin/products/ProductEdit.vue'),
                 }
             ],
             meta: { requiresAuth: true },

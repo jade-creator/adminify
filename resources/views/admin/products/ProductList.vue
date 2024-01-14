@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref, watch } from "vue";
+import { onMounted, ref, toRaw, watch } from "vue";
 import { Bootstrap4Pagination } from "laravel-vue-pagination";
 import ProductListItem from "./ProductListItem.vue";
 import { useRouter } from 'vue-router'
@@ -32,6 +32,10 @@ const getCategories = () => {
   axios.get("/api/categories").then((response) => {
     categories.value = response.data.data;
   });
+};
+
+const edtProduct = (product) => {
+    router.push({ name: "admin.products.edit", params: { id: product.id } });
 };
 
 onMounted(() => {
@@ -93,6 +97,7 @@ watch(
                 :key="product.id"
                 :product="product"
                 :index="index"
+                @edit-product="edtProduct"
               />
             </tbody>
             <tbody v-else>

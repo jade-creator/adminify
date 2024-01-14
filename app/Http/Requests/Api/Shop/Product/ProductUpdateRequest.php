@@ -12,7 +12,9 @@ class ProductUpdateRequest extends FormRequest
         return [
             'name' => 'required|string|max:255',
             'description' => 'required|string|max:255',
-            'category_id' => 'required|exists:categories'
+            'category_id' => 'required|exists:categories,id',
+            'date_and_time' => 'required|string',
+            'images.*' => 'required|image|mimes:jpg,jpeg,img,png'
         ];
     }
 }

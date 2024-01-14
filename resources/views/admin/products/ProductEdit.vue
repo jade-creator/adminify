@@ -1,14 +1,32 @@
 <script setup>
-import { onMounted, ref } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import { onMounted, ref, watch } from "vue";
 import { Field, ErrorMessage } from "vee-validate";
 import * as yup from "yup";
 import FormWizard from "@components/Form/FormWizard.vue";
 import FormStep from "@components/Form/FormStep.vue";
-import { useRouter } from "vue-router";
 
+const route = useRoute();
 const router = useRouter();
 
+const product = ref({
+    name: '',
+    category_id: '',
+    description: '',
+    date_and_time: '',
+    images: [],
+});
+
 const categories = ref([]);
+
+const getProduct = () => {
+  axios
+    .get(`/api/products/${route.params.id}`)
+    .then((response) => {
+      product.value = response.data.data;
+      console.log(response.data.data);
+    });
+};
 
 const getCategories = () => {
   axios.get("/api/categories").then((response) => {
@@ -30,31 +48,38 @@ const validationSchema = [
   }),
 ];
 
-onMounted(() => {
-  getCategories();
-});
-
 function onSubmit(formData) {
   const headers = { "Content-Type": "multipart/form-data" };
+  const params = { _method: "put" };
 
-  axios.post("/api/products", formData, { headers }).then((response) => {
+  axios.post(`/api/products/${route.params.id}`, formData, { headers, params })
+  .then((response) => {
     router.push("/admin/products");
+  })
+  .catch((error) => {
+    toastrAlert.error(error);
   });
 }
+
+onMounted(() => {
+  getProduct();
+  getCategories();
+});
 </script>
+
 <template>
   <section class="content-header">
     <div class="container-fluid">
       <div class="row mb-2">
         <div class="col-sm-6">
-          <h1>Create Product</h1>
+          <h1>Edit Product</h1>
         </div>
         <div class="col-sm-6">
           <ol class="breadcrumb float-sm-right">
             <li class="breadcrumb-item">
               <RouterLink to="/admin/products">Home</RouterLink>
             </li>
-            <li class="breadcrumb-item active">Create Product</li>
+            <li class="breadcrumb-item active">Edit Product</li>
           </ol>
         </div>
       </div>
@@ -77,6 +102,7 @@ function onSubmit(formData) {
                 <div class="form-group">
                   <label for="product-name">Product Name</label>
                   <Field
+                    v-model="product.name"
                     name="name"
                     type="text"
                     placeholder="Type the product name"
@@ -89,6 +115,7 @@ function onSubmit(formData) {
                 <div class="form-group">
                   <label for="product-name">Product Category</label>
                   <Field
+                    v-model="product.category_id"
                     name="category_id"
                     as="select"
                     class="form-control"
@@ -109,6 +136,7 @@ function onSubmit(formData) {
                 <div class="form-group">
                   <label for="product-description">Product Description</label>
                   <Field
+                    v-model="product.description"
                     name="description"
                     as="textarea"
                     placeholder="Type the product description"
@@ -122,6 +150,9 @@ function onSubmit(formData) {
               <FormStep>
                 <div class="form-group">
                   <label for="product-description">Product Images</label>
+                  <div class="mt-2 mb-2">
+                    <img style="max-width: 400px;" v-for="(url, index) in product.images" :key="index" :src="url">
+                  </div>
                   <Field
                     type="file"
                     multiple
@@ -137,6 +168,7 @@ function onSubmit(formData) {
                 <div class="form-group">
                   <label for="product-date-and-time">Date and Time</label>
                   <Field
+                    v-model="product.date_and_time"
                     name="date_and_time"
                     type="datetime-local"
                     class="form-control"

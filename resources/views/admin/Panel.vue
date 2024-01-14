@@ -263,7 +263,7 @@ function logout() {
               data-accordion="false"
             >
               <li class="nav-item menu-open">
-                <a href="#" class="nav-link" active-class="active">
+                <a href="#" class="nav-link">
                   <i class="nav-icon fas fa-tachometer-alt"></i>
                   <p>
                     Products
@@ -280,7 +280,7 @@ function logout() {
                 </ul>
                 <ul class="nav nav-treeview">
                   <li class="nav-item">
-                    <RouterLink to="/admin/products/create" class="nav-link">
+                    <RouterLink to="/admin/products/create" class="nav-link" active-class="active">
                         <i class="far fa-circle nav-icon"></i>
                       <p>Create Product</p>
                     </RouterLink>

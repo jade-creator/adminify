@@ -22,7 +22,7 @@ use Spatie\RouteAttributes\Attributes\Middleware;
  * @tags Product
  */
 #[Middleware('auth:sanctum')]
-#[ApiResource(resource: 'products', only: ['index', 'store', 'destroy'])]
+#[ApiResource(resource: 'products', only: ['index', 'store', 'update', 'show', 'destroy'])]
 class ProductController extends Controller
 {
     public function index(ProductsRequest $request)
@@ -62,7 +62,7 @@ class ProductController extends Controller
         ]);
     }
 
-    public function store(ProductStoreRequest $request)
+    public function store(ProductStoreRequest $request): Response
     {
         try {
             DB::transaction(function () use ($request) {
@@ -85,14 +85,49 @@ class ProductController extends Controller
 
             throw new LogicException('Something went wrong!');
         }
+
+        return response([
+            'message' => trans('Product Created!')
+        ]);
     }
 
-    public function update(ProductUpdateRequest $request, Product $product)
+    public function show(Product $product): Response
     {
-        // try {
-        //     $product = 
-        // } catch (\Throwable $th) {
-        //     //throw $th;
-        // }
+        $product->load(['media', 'category']);
+
+        return response([
+            'data' => ProductResource::make($product)
+        ]);
+    }
+
+    public function update(ProductUpdateRequest $request, Product $product): Response
+    {
+        try {
+            DB::transaction(function () use ($request, $product) {
+                $product->update([
+                    'name' => $request->name,
+                    'description' => $request->description,
+                    'category_id' => $request->category_id,
+                    'date_and_time' => $request->date_and_time,
+                ]);
+
+                $product->clearMediaCollection('images');
+
+                if ($request->hasFile('images')) {
+                    $product->addMultipleMediaFromRequest(['images'])
+                        ->each(function ($fileAdder) {
+                            $fileAdder->toMediaCollection('images');
+                        });
+                }
+            });
+        } catch (Exception $e) {
+            report($e);
+
+            throw new LogicException('Something went wrong!');
+        }
+
+        return response([
+            'message' => trans('Product Updated!')
+        ]);
     }
 }
