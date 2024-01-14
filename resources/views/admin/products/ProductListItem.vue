@@ -2,14 +2,19 @@
 const props = defineProps({
     product: Object,
     index: Number,
+    selectAll: Boolean,
 });
 
-const emit = defineEmits(['editProduct']);
+const emit = defineEmits(['editProduct', 'toggleSelection']);
+
+const toggleSelection = () => {
+    emit('toggleSelection', props.product);
+}
 </script>
 <template>
     <tr>
         <td>
-            <!-- <input type="checkbox" :checked="selectAll" @change="toggleSelection" /> -->
+            <input type="checkbox" :checked="selectAll" @change="toggleSelection" />
         </td>
         <td>{{ index + 1 }}</td>
         <td>{{ product.name }}</td>
@@ -18,7 +23,6 @@ const emit = defineEmits(['editProduct']);
         <td>{{ product.date_and_time }}</td>
         <td>
             <a href="#" @click.prevent="$emit('editProduct', product)"><i class="fa fa-edit"></i></a>
-            <!-- <a href="#" @click.prevent="$emit('confirmUserDeletion', user.id)"><i class="fa fa-trash text-danger ml-2"></i></a> -->
         </td>
     </tr>
 </template>

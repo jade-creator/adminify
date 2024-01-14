@@ -38,6 +38,44 @@ const edtProduct = (product) => {
     router.push({ name: "admin.products.edit", params: { id: product.id } });
 };
 
+const selectedProducts = ref([]);
+const selectAll = ref(false);
+
+const bulkDelete = () => {
+    const params = { _method: "delete" };
+
+    axios.post('/api/products', {
+        ids: selectedProducts.value
+    }, { params })
+    .then(response => {
+        products.value.data = products.value.data.filter(product => !selectedProducts.value.includes(product.id));
+        selectedProducts.value = [];
+        selectAll.value = false;
+        toastrAlert.default(response.data.message);
+    })
+    .catch(error => {
+        toastrAlert.error(error.message);
+        console.log(['error', error]);
+    });
+};
+
+const toggleSelection = (product) => {
+    const index = selectedProducts.value.indexOf(product.id);
+    if (index === -1) {
+        selectedProducts.value.push(product.id);
+    } else {
+        selectedProducts.value.splice(index, 1);
+    }
+};
+
+const selectAllProducts = () => {
+    if (selectAll.value) {
+        selectedProducts.value = products.value.data.map(product => product.id);
+    } else {
+        selectedProducts.value = [];
+    }
+}
+
 onMounted(() => {
   getProducts();
   getCategories();
@@ -63,13 +101,13 @@ watch(
                 :key="category.id"
                 :value="category.id">{{ category.name }}</option>
           </select>
-                    <!-- <div v-if="selectedUsers.length > 0">
-                        <button @click="bulkDelete" type="button" class="ml-2 mb-2 btn btn-danger">
-                            <i class="fa fa-trash mr-1"></i>
-                            Delete Selected
-                        </button>
-                        <span class="ml-2">Selected {{ selectedUsers.length }} users</span>
-                    </div> -->
+                <div v-if="selectedProducts.length > 0">
+                    <button @click="bulkDelete" type="button" class="ml-2 mb-2 btn btn-danger">
+                        <i class="fa fa-trash mr-1"></i>
+                        Delete Selected
+                    </button>
+                    <span class="ml-2">Selected {{ selectedProducts.length }} products</span>
+                </div>
         </div>
         <div>
 
@@ -82,7 +120,7 @@ watch(
             <thead>
               <tr>
                 <th>
-                  <!-- <input type="checkbox" v-model="selectAll" @change="selectAllUsers" /> -->
+                  <input type="checkbox" v-model="selectAll" @change="selectAllProducts" />
                 </th>
                 <th style="width: 10px">#</th>
                 <th>Name</th>
@@ -98,6 +136,8 @@ watch(
                 :product="product"
                 :index="index"
                 @edit-product="edtProduct"
+                @toggle-selection="toggleSelection"
+                :select-all="selectAll"
               />
             </tbody>
             <tbody v-else>

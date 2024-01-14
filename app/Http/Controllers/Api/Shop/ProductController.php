@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Shop;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\Shop\Product\ProductBulkDeleteRequest;
 use App\Http\Requests\Api\Shop\Product\ProductsRequest;
 use App\Http\Requests\Api\Shop\Product\ProductStoreRequest;
 use App\Http\Requests\Api\Shop\Product\ProductUpdateRequest;
@@ -15,6 +16,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use LogicException;
 use Spatie\RouteAttributes\Attributes\Prefix;
+use Spatie\RouteAttributes\Attributes\Delete;
 use Spatie\RouteAttributes\Attributes\ApiResource;
 use Spatie\RouteAttributes\Attributes\Middleware;
 
@@ -22,7 +24,7 @@ use Spatie\RouteAttributes\Attributes\Middleware;
  * @tags Product
  */
 #[Middleware('auth:sanctum')]
-#[ApiResource(resource: 'products', only: ['index', 'store', 'update', 'show', 'destroy'])]
+#[ApiResource(resource: 'products', only: ['index', 'store', 'update', 'show'])]
 class ProductController extends Controller
 {
     public function index(ProductsRequest $request)
@@ -53,9 +55,22 @@ class ProductController extends Controller
         return $data;
     }
 
-    public function destroy(Request $request, Product $product): Response
+    #[Delete(uri: '/products', name: 'products.destroy')]
+    public function destroy(ProductBulkDeleteRequest $request): Response
     {
-        $product->delete();
+        try {
+            $products = Product::whereIn('id', $request->input('ids'))->get();
+
+            $products->each(function ($product) {
+                $product->clearMediaCollection('images');
+
+                $product->delete();
+            });
+        } catch (Exception $e) {
+            report($e);
+
+            throw new LogicException('Something went wrong!');
+        }
 
         return response([
             'message' => trans('Product Deleted.')
