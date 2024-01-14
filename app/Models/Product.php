@@ -28,8 +28,12 @@ class Product extends Model
         'date_and_time'
     ];
 
+    protected $casts = [
+        'date_and_time' => 'datetime'
+    ];
+
     public function category()
     {
-        return $this->hasOne(Category::class);
+        return $this->belongsTo(Category::class);
     }
 }

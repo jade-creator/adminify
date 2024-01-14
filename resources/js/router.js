@@ -20,6 +20,11 @@ const router = createRouter({
                     path: 'dashboard',
                     name: 'dashboard',
                     component: () => import('@views/admin/Dashboard.vue'),
+                },
+                {
+                    path: 'products',
+                    name: 'products',
+                    component: () => import('@views/admin/products/ProductList.vue'),
                 }
             ],
             meta: { requiresAuth: true },
@@ -30,8 +35,6 @@ const router = createRouter({
 router.beforeEach(async (to, from) => {
     const auth = useAuthStore();
 
-    // console.log(['r', auth.isAuthenticated(), !auth.isAuthenticated() &&
-    // to.meta.requiresAuth]);
     if (
         !auth.isAuthenticated() &&
         to.meta.requiresAuth

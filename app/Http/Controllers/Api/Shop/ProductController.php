@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api\Shop;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\Shop\Product\ProductsRequest;
 use App\Http\Requests\Api\Shop\Product\ProductUpdateRequest;
+use App\Http\Resources\ProductCollection;
+use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use Exception;
 use Illuminate\Http\Request;
@@ -21,13 +23,15 @@ use Spatie\RouteAttributes\Attributes\Middleware;
 #[ApiResource(resource: 'products', only: ['index', 'destroy'])]
 class ProductController extends Controller
 {
-    public function index(ProductsRequest $request): Response
+    public function index(ProductsRequest $request)
     {
         $searchQuery = $request->input('search');
         $categoryFilter = $request->input('category');
 
         try {
-            $data = Product::query()
+            $data = new ProductCollection(
+                Product::query()
+                ->with('category')
                 ->when(filled($searchQuery), function ($query) use ($searchQuery) {
                     $query->where('name', 'like', "%{$searchQuery}%")
                         ->orWhere('description', 'like', "%{$searchQuery}%");
@@ -36,14 +40,15 @@ class ProductController extends Controller
                     $query->where('category_id', $categoryFilter);
                 })
                 ->latest()
-                ->paginate();
+                ->paginate()
+            );
         } catch (Exception $e) {
             report($e);
 
             throw new LogicException('Something went wrong!');
         }
 
-        return response($data);
+        return $data;
     }
 
     public function destroy(Request $request, Product $product): Response
