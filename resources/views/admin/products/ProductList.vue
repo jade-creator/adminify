@@ -2,6 +2,9 @@
 import { onMounted, ref, watch } from "vue";
 import { Bootstrap4Pagination } from "laravel-vue-pagination";
 import ProductListItem from "./ProductListItem.vue";
+import { useRouter } from 'vue-router'
+
+const router = useRouter();
 
 const products = ref({
   data: [],
@@ -49,11 +52,14 @@ watch(
     <div class="container-fluid">
       <div class="d-flex justify-content-between">
         <div class="d-flex">
-          <!-- <button @click="addUser" type="button" class="mb-2 btn btn-primary">
-                        <i class="fa fa-plus-circle mr-1"></i>
-                        Add New User
-                    </button>
-                    <div v-if="selectedUsers.length > 0">
+                      <select v-model="list.category" class="form-control mb-2 mr-2">
+            <option value="">Select a Category</option>
+            <option
+                v-for="(category) in categories"
+                :key="category.id"
+                :value="category.id">{{ category.name }}</option>
+          </select>
+                    <!-- <div v-if="selectedUsers.length > 0">
                         <button @click="bulkDelete" type="button" class="ml-2 mb-2 btn btn-danger">
                             <i class="fa fa-trash mr-1"></i>
                             Delete Selected
@@ -61,14 +67,8 @@ watch(
                         <span class="ml-2">Selected {{ selectedUsers.length }} users</span>
                     </div> -->
         </div>
-        <div class="d-flex">
-          <select v-model="list.category" class="form-control mb-2 mr-2">
-            <option value="">Select a Category</option>
-            <option
-                v-for="(category) in categories"
-                :key="category.id"
-                :value="category.id">{{ category.name }}</option>
-          </select>
+        <div>
+
           <input type="text" v-model="list.search" class="form-control" placeholder="Search..." />
         </div>
       </div>

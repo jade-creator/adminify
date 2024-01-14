@@ -20,7 +20,7 @@ async function login() {
       remember: admin.value.remember,
     });
 
-    router.push('/admin')
+    router.push('/admin/products')
       .then(() => { router.go(0) });
   } catch (error) {
     toastrAlert.error(error.message);

@@ -23,8 +23,13 @@ const router = createRouter({
                 },
                 {
                     path: 'products',
-                    name: 'products',
+                    name: 'admin.products',
                     component: () => import('@views/admin/products/ProductList.vue'),
+                },
+                {
+                    path: 'products/create',
+                    name: 'admin.products.create',
+                    component: () => import('@views/admin/products/ProductCreate.vue'),
                 }
             ],
             meta: { requiresAuth: true },
