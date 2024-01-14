@@ -16,6 +16,7 @@ export default defineConfig({
             { find: '@views', replacement: fileURLToPath(new URL('./resources/views', import.meta.url)) },
             { find: '@stores', replacement: fileURLToPath(new URL('./resources/js/stores', import.meta.url)) },
             { find: '@assets', replacement: fileURLToPath(new URL('./public', import.meta.url)) },
+            { find: '@components', replacement: fileURLToPath(new URL('./resources/js/components', import.meta.url)) },
         ]
     }
 });

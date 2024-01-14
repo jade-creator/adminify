@@ -307,7 +307,6 @@ function logout() {
 
       <div class="content-wrapper">
         <RouterView />
-        <button @click="logout">logout</button>
       </div>
 
       <footer class="main-footer">

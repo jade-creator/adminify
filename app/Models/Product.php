@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
 /**
  * App\Models\Product
@@ -16,9 +18,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * 
  * @property-read \App\Models\Category|null $category
  */
-class Product extends Model
+class Product extends Model implements HasMedia
 {
     use HasFactory;
+    use InteractsWithMedia;
     use SoftDeletes;
 
     protected $fillable = [
@@ -35,5 +38,13 @@ class Product extends Model
     public function category()
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function registerMediaCollections(): void
+    {
+        $acceptedImageMimeTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+
+        $this->addMediaCollection('images')
+            ->acceptsMimeTypes($acceptedImageMimeTypes);
     }
 }

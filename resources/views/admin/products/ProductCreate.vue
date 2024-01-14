@@ -1,3 +1,47 @@
+<script setup>
+import { onMounted, ref } from "vue";
+import { Field, ErrorMessage } from "vee-validate";
+import * as yup from "yup";
+import FormWizard from "@components/Form/FormWizard.vue";
+import FormStep from "@components/Form/FormStep.vue";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
+
+const categories = ref([]);
+
+const getCategories = () => {
+  axios.get("/api/categories").then((response) => {
+    categories.value = response.data.data;
+  });
+};
+
+const validationSchema = [
+  yup.object({
+    name: yup.string().required().label("Product Name"),
+    category_id: yup.string().required().label("Product Category"),
+    description: yup.string().required().label("Product Description"),
+  }),
+  yup.object({
+    images: yup.mixed().required(),
+  }),
+  yup.object({
+    date_and_time: yup.date().required(),
+  }),
+];
+
+onMounted(() => {
+  getCategories();
+});
+
+function onSubmit(formData) {
+  const headers = { "Content-Type": "multipart/form-data" };
+
+  axios.post("/api/products", formData, { headers }).then((response) => {
+    router.push("/admin/products");
+  });
+}
+</script>
 <template>
   <section class="content-header">
     <div class="container-fluid">
@@ -23,65 +67,85 @@
         <div class="col-md-12">
           <div class="card card-primary">
             <div class="card-header">
-              <h3 class="card-title">Product Form</h3>
+              <h3 class="card-title">Step 1</h3>
             </div>
-            <!-- /.card-header -->
-            <!-- form start -->
-            <form>
-              <div class="card-body">
+            <FormWizard
+              :validation-schema="validationSchema"
+              @submit="onSubmit"
+            >
+              <FormStep>
                 <div class="form-group">
-                  <label for="exampleInputEmail1">Email address</label>
-                  <input
-                    type="email"
+                  <label for="product-name">Product Name</label>
+                  <Field
+                    name="name"
+                    type="text"
+                    placeholder="Type the product name"
                     class="form-control"
-                    id="exampleInputEmail1"
-                    placeholder="Enter email"
+                    id="product-name"
                   />
+                  <ErrorMessage name="name" class="text-red" />
                 </div>
-                <div class="form-group">
-                  <label for="exampleInputPassword1">Password</label>
-                  <input
-                    type="password"
-                    class="form-control"
-                    id="exampleInputPassword1"
-                    placeholder="Password"
-                  />
-                </div>
-                <div class="form-group">
-                  <label for="exampleInputFile">File input</label>
-                  <div class="input-group">
-                    <div class="custom-file">
-                      <input
-                        type="file"
-                        class="custom-file-input"
-                        id="exampleInputFile"
-                      />
-                      <label class="custom-file-label" for="exampleInputFile"
-                        >Choose file</label
-                      >
-                    </div>
-                    <div class="input-group-append">
-                      <span class="input-group-text">Upload</span>
-                    </div>
-                  </div>
-                </div>
-                <div class="form-check">
-                  <input
-                    type="checkbox"
-                    class="form-check-input"
-                    id="exampleCheck1"
-                  />
-                  <label class="form-check-label" for="exampleCheck1"
-                    >Check me out</label
-                  >
-                </div>
-              </div>
-              <!-- /.card-body -->
 
-              <div class="card-footer">
-                <button type="submit" class="btn btn-primary">Submit</button>
-              </div>
-            </form>
+                <div class="form-group">
+                  <label for="product-name">Product Category</label>
+                  <Field
+                    name="category_id"
+                    as="select"
+                    class="form-control"
+                    id="product-category"
+                  >
+                    <option value="">Select a Category</option>
+                    <option
+                      v-for="category in categories"
+                      :key="category.id"
+                      :value="category.id"
+                    >
+                      {{ category.name }}
+                    </option>
+                  </Field>
+                  <ErrorMessage name="category_id" class="text-red" />
+                </div>
+
+                <div class="form-group">
+                  <label for="product-description">Product Description</label>
+                  <Field
+                    name="description"
+                    as="textarea"
+                    placeholder="Type the product description"
+                    class="form-control"
+                    id="product-description"
+                  />
+                  <ErrorMessage name="description" class="text-red" />
+                </div>
+              </FormStep>
+
+              <FormStep>
+                <div class="form-group">
+                  <label for="product-description">Product Images</label>
+                  <Field
+                    type="file"
+                    multiple
+                    name="images"
+                    accept="image/png, image/jpeg"
+                    class="form-control"
+                  />
+                  <ErrorMessage name="images" class="text-red" />
+                </div>
+              </FormStep>
+
+              <FormStep>
+                <div class="form-group">
+                  <label for="product-date-and-time">Date and Time</label>
+                  <Field
+                    name="date_and_time"
+                    type="datetime-local"
+                    class="form-control"
+                    id="product-date-and-time"
+                  />
+                  <ErrorMessage name="date_and_time" class="text-red" />
+                </div>
+              </FormStep>
+            </FormWizard>
           </div>
         </div>
       </div>
