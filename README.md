@@ -1,3 +1,74 @@
+# Adminify: Admin Dashboard with AdminLTE
+
+## Installation
+
+### Prerequisite
+
+- [PHP](https://www.php.net/) _at least version 8.2^_
+- [MySQL](https://www.mysql.com/) _at least version 8.0.3_
+- [Composer](https://getcomposer.org/) _at least version 2.4.2 (recommended latest)_
+- [Node.JS](https://nodejs.org/en/) _at least version 18.19.0 (recommended latest lts iron)_
+
+## Run Locally
+
+Clone the project
+
+```bash
+  git clone https://github.com/
+```
+
+Go to the project directory
+
+```bash
+  cd adminify
+```
+
+Copy the `.env.example` and named it `.env`.
+
+```terminal
+  cp .env.example .env
+```
+
+Create database.
+
+> update .env database config
+
+Install composer packages.
+
+```terminal
+  composer install
+```
+
+Install npm packages.
+
+```bash
+  npm install
+```
+
+Generate application key.
+
+```terminal
+  php artisan key:generate
+```
+
+Create a symbolic link to access storage static files from public.
+
+```terminal
+  php artisan storage:link
+```
+
+Run migration and seeders
+
+```terminal
+  php artisan migrate --seed
+```
+
+Start the server
+
+```bash
+  npm run dev
+```
+
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
 <p align="center">
