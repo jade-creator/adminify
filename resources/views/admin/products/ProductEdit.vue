@@ -24,7 +24,6 @@ const getProduct = () => {
     .get(`/api/products/${route.params.id}`)
     .then((response) => {
       product.value = response.data.data;
-      console.log(response.data.data);
     });
 };
 
@@ -55,6 +54,8 @@ function onSubmit(formData) {
   axios.post(`/api/products/${route.params.id}`, formData, { headers, params })
   .then((response) => {
     router.push("/admin/products");
+
+    toastrAlert.default(response.data.message);
   })
   .catch((error) => {
     toastrAlert.error(error);

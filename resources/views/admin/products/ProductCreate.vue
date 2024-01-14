@@ -37,8 +37,10 @@ onMounted(() => {
 function onSubmit(formData) {
   const headers = { "Content-Type": "multipart/form-data" };
 
-  axios.post("/api/products", formData, { headers }).then((response) => {
+  const response = axios.post("/api/products", formData, { headers }).then((response) => {
     router.push("/admin/products");
+
+    toastrAlert.default(response.data.message);
   });
 }
 </script>
