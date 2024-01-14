@@ -14,7 +14,7 @@
 Clone the project
 
 ```bash
-  git clone https://github.com/
+  git clone https://github.com/jade-creator/adminify.git
 ```
 
 Go to the project directory
