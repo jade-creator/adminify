@@ -32,7 +32,7 @@ class LoginController extends Controller
             'password' => $request->input('password')
         ];
 
-        if (! Auth::guard('admin')->attempt($credentials)) {
+        if (! Auth::guard('admin')->attempt($credentials, $request->input('remember'))) {
             throw new AuthenticationException(trans('Invalid credentials!'));
         }
 

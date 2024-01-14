@@ -6,14 +6,19 @@ import { useRouter } from 'vue-router'
 const auth = useAuthStore();
 const admin = ref({
   identifier: '',
-  password: ''
+  password: '',
+  remember: false,
 });
 const router = useRouter();
 
 
 async function login() {
   try {
-    await auth.login({ identifier: admin.value.identifier, password: admin.value.password });
+    await auth.login({
+      identifier: admin.value.identifier,
+      password: admin.value.password,
+      remember: admin.value.remember,
+    });
 
     router.push('/admin')
       .then(() => { router.go(0) });
@@ -63,7 +68,7 @@ async function login() {
             <div class="row">
               <div class="col-8">
                 <div class="icheck-primary">
-                  <input type="checkbox" id="remember" />
+                  <input v-model="admin.remember" type="checkbox" id="remember" />
                   <label for="remember"> Remember Me </label>
                 </div>
               </div>

@@ -15,13 +15,14 @@ export const useAuthStore = defineStore("auth", {
         isAuthenticated() {
             return this.admin !== null;
         },
-        async login({ identifier, password }) {
+        async login({ identifier, password, remember }) {
             try {
                 const {
                     data: { admin, token }
                 } = await axios.post('/api/admins/login', {
                     identifier,
-                    password
+                    password,
+                    remember
                 });
                 this.admin = JSON.stringify(admin);
                 this.token = token;
