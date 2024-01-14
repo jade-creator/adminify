@@ -16,4 +16,11 @@ class LoginRequest extends FormRequest
             'remember' => 'required|boolean',
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'identifier.required' => 'The email or username is required.'
+        ];
+    }
 }
