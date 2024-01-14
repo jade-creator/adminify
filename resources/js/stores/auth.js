@@ -30,10 +30,20 @@ export const useAuthStore = defineStore("auth", {
                 throw new Error(response.data.message);
             }
         },
-        // todo: logout endpoint
-        logout() {
-            this.admin = null;
-            this.token = null;
+        async logout() {
+            const params = { _method: "delete" };
+
+            try {
+                const {
+                    data: { message }
+                } = await axios.post('/api/admins/logout', {}, { params });
+                this.admin = null;
+                this.token = null;
+
+                return message;
+            } catch ({ response }) {
+                throw new Error(response.data.message);
+            }
         }
     }
 });

@@ -6,10 +6,16 @@ import { useRouter } from "vue-router";
 const auth = useAuthStore();
 const router = useRouter();
 
-function logout() {
-  auth.logout();
+async function logout() {
+  try {
+    const message = await auth.logout();
 
-  router.push("/");
+    router.push("/");
+
+    toastrAlert.default(message);
+  } catch (error) {
+    toastrAlert.error(error.message);
+  }
 }
 </script>
 
