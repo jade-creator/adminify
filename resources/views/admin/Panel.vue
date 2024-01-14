@@ -274,7 +274,7 @@ function logout() {
                   <li class="nav-item">
                     <RouterLink to="/admin/products" class="nav-link" active-class="active">
                         <i class="far fa-circle nav-icon"></i>
-                      <p>Product List</p>
+                      <p>List</p>
                     </RouterLink>
                   </li>
                 </ul>
@@ -282,19 +282,10 @@ function logout() {
                   <li class="nav-item">
                     <RouterLink to="/admin/products/create" class="nav-link" active-class="active">
                         <i class="far fa-circle nav-icon"></i>
-                      <p>Create Product</p>
+                      <p>Create</p>
                     </RouterLink>
                   </li>
                 </ul>
-              </li>
-              <li class="nav-item">
-                <a href="pages/widgets.html" class="nav-link">
-                  <i class="nav-icon fas fa-th"></i>
-                  <p>
-                    Widgets
-                    <span class="right badge badge-danger">New</span>
-                  </p>
-                </a>
               </li>
               <li class="nav-header">OTHERS</li>
               <li class="nav-item">
