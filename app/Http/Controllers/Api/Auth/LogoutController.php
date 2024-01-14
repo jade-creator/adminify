@@ -19,7 +19,7 @@ class LogoutController extends Controller
     #[Delete(uri: 'logout', name: 'admins.logout', middleware: 'auth:sanctum')]
     public function __invoke(Request $request): mixed
     {
-        Auth::logout();
+        auth()->guard('admin')->logout();
 
         auth()->user()->tokens()->delete();
 
