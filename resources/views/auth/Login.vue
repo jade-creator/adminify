@@ -5,8 +5,8 @@ import { useRouter } from 'vue-router'
 
 const auth = useAuthStore();
 const admin = ref({
-  identifier: '',
-  password: '',
+  identifier: 'admin',
+  password: 'password',
   remember: false,
 });
 const router = useRouter();
